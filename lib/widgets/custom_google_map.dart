@@ -1,5 +1,8 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:maps_app/models/placemodel.dart';
 
 class CustomGoogleMap extends StatefulWidget {
   const CustomGoogleMap({super.key});
@@ -67,10 +70,17 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
   }
 
   void initMarkers() {
-    var myMarker = const Marker(
-        markerId: MarkerId('Al Mahalla El kubra'),
-        position: LatLng(30.971158992498815, 31.168489152001726));
-    Markers.add(myMarker);
+    var myMarkers = places
+        .map(
+          (Placemodel) => Marker(
+            markerId: MarkerId(
+              Placemodel.id.toString(),
+            ),
+            position: Placemodel.position,
+          ),
+        )
+        .toSet();
+    Markers.addAll(myMarkers);
   }
 }
 
