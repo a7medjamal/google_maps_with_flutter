@@ -41,6 +41,7 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
     return Stack(
       children: [
         GoogleMap(
+            zoomControlsEnabled: false,
             markers: Markers,
             onMapCreated: (controller) {
               googleMapController = controller;
@@ -73,23 +74,23 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
     googleMapController.setMapStyle(DarkMapStyle);
   }
 
-  Future<Uint8List> getImageFromRawData(String image, double width) async {
-    var imageData = await rootBundle.load(image);
-    // convert Image to UintList
-    var imageCodec = await ui.instantiateImageCodec(
-        imageData.buffer.asUint8List(),
-        targetWidth: width.round());
-    // get the next edited frame (optional)
-    var imageFrame = await imageCodec.getNextFrame();
-    // convert it to its the raw datatype
-    var imageByteData =
-        await imageFrame.image.toByteData(format: ui.ImageByteFormat.png);
-    return imageByteData!.buffer.asUint8List();
-  }
+  // Future<Uint8List> getImageFromRawData(String image, double width) async {
+  //   var imageData = await rootBundle.load(image);
+  //   // convert Image to UintList
+  //   var imageCodec = await ui.instantiateImageCodec(
+  //       imageData.buffer.asUint8List(),
+  //       targetWidth: width.round());
+  //   // get the next edited frame (optional)
+  //   var imageFrame = await imageCodec.getNextFrame();
+  //   // convert it to its the raw datatype
+  //   var imageByteData =
+  //       await imageFrame.image.toByteData(format: ui.ImageByteFormat.png);
+  //   return imageByteData!.buffer.asUint8List();
+  // }
 
   void initMarkers() async {
-    var customMarkerIcon = await BitmapDescriptor.fromBytes(
-        await getImageFromRawData('assets/images/marker_icon.png', 100));
+    var customMarkerIcon = await BitmapDescriptor.fromAssetImage(
+        const ImageConfiguration(), 'assets/images/marker_icon.png');
     var myMarkers = places
         .map(
           (Placemodel) => Marker(
