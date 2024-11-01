@@ -21,13 +21,35 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
   }
 
   @override
+  void dispose() {
+    googleMapController.dispose();
+    super.dispose();
+  }
+
+  late GoogleMapController googleMapController;
+  @override
   Widget build(BuildContext context) {
-    return GoogleMap(
-      cameraTargetBounds: CameraTargetBounds(LatLngBounds(
-        northeast: const LatLng(31.071956147539264, 31.407605050179505),
-        southwest: const LatLng(31.01365657287343, 31.348197604764987),
-      )),
-      initialCameraPosition: initialCameraPosition,
+    return Stack(
+      children: [
+        GoogleMap(
+            onMapCreated: (controller) {
+              googleMapController = controller;
+            },
+            // cameraTargetBounds: CameraTargetBounds(LatLngBounds(
+            //   northeast: const LatLng(31.071956147539264, 31.407605050179505),
+            //   southwest: const LatLng(31.01365657287343, 31.348197604764987),
+            // )),
+            initialCameraPosition: initialCameraPosition),
+        Positioned(
+          bottom: 16,
+          left: 16,
+          right: 16,
+          child: ElevatedButton(
+            onPressed: () {},
+            child: const Text('Change location'),
+          ),
+        )
+      ],
     );
   }
 }
