@@ -17,6 +17,7 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
       target: LatLng(31.040961319305158, 31.378490683910098),
       zoom: 15,
     );
+    initMarkers();
     super.initState();
   }
 
@@ -27,11 +28,13 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
   }
 
   late GoogleMapController googleMapController;
+  Set<Marker> Markers = {};
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
         GoogleMap(
+            markers: Markers,
             onMapCreated: (controller) {
               googleMapController = controller;
               initMapStyle();
@@ -61,6 +64,13 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
     var DarkMapStyle = await DefaultAssetBundle.of(context)
         .loadString('assets/map_style/style.json');
     googleMapController.setMapStyle(DarkMapStyle);
+  }
+
+  void initMarkers() {
+    var myMarker = const Marker(
+        markerId: MarkerId('Al Mahalla El kubra'),
+        position: LatLng(30.971158992498815, 31.168489152001726));
+    Markers.add(myMarker);
   }
 }
 
