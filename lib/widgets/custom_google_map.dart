@@ -1,8 +1,12 @@
 // ignore_for_file: non_constant_identifier_names
 
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:maps_app/models/placemodel.dart';
+import 'dart:ui' as ui;
 
 class CustomGoogleMap extends StatefulWidget {
   const CustomGoogleMap({super.key});
@@ -69,10 +73,27 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
     googleMapController.setMapStyle(DarkMapStyle);
   }
 
-  void initMarkers() {
+  Future<Uint8List> getImageFromRawData(String image, double width) async {
+    var imageData = await rootBundle.load(image);
+    // convert Image to UintList
+    var imageCodec = await ui.instantiateImageCodec(
+        imageData.buffer.asUint8List(),
+        targetWidth: width.round());
+    // get the next edited frame (optional)
+    var imageFrame = await imageCodec.getNextFrame();
+    // convert it to its the raw datatype
+    var imageByteData =
+        await imageFrame.image.toByteData(format: ui.ImageByteFormat.png);
+    return imageByteData!.buffer.asUint8List();
+  }
+
+  void initMarkers() async {
+    var customMarkerIcon = await BitmapDescriptor.fromBytes(
+        await getImageFromRawData('assets/images/marker_icon.png', 100));
     var myMarkers = places
         .map(
           (Placemodel) => Marker(
+            icon: customMarkerIcon,
             infoWindow: InfoWindow(
               title: Placemodel.name,
             ),
@@ -84,6 +105,7 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
         )
         .toSet();
     Markers.addAll(myMarkers);
+    setState(() {});
   }
 }
 
