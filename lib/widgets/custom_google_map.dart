@@ -73,6 +73,9 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
     var myMarkers = places
         .map(
           (Placemodel) => Marker(
+            infoWindow: InfoWindow(
+              title: Placemodel.name,
+            ),
             markerId: MarkerId(
               Placemodel.id.toString(),
             ),
