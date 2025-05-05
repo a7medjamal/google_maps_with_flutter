@@ -1,12 +1,9 @@
 // ignore_for_file: non_constant_identifier_names
 
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:maps_app/models/placemodel.dart';
-import 'dart:ui' as ui;
 
 class CustomGoogleMap extends StatefulWidget {
   const CustomGoogleMap({super.key});
