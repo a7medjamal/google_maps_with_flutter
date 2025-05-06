@@ -52,7 +52,7 @@ class GoogleMapsTest extends StatelessWidget {
       )..loadPOIs(),
       child: const MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: CustomGoogleMap(),
+        home: CustomGoogleMapPage(),
       ),
     );
   }
