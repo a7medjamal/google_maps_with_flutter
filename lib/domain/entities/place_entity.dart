@@ -1,4 +1,4 @@
-import 'package:google_maps_flutter/google_maps_flutter.dart'; // For LatLng
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class PlaceEntity {
   final int id;

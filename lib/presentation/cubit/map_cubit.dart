@@ -17,7 +17,7 @@ class MapCubit extends Cubit<MapState> {
   Future<void> loadPOIs() async {
     try {
       emit(MapLoading());
-      final pois = await getPOIsUseCase.execute();
+      final pois = await getPOIsUseCase.repository.fetchPOIs();
       emit(MapLoaded(
         pois: pois,
         isAddingPOI: false,

@@ -5,8 +5,30 @@ import 'package:maps_app/domain/entities/place_entity.dart';
 import 'package:maps_app/presentation/cubit/map_cubit.dart';
 import 'package:maps_app/presentation/cubit/map_state.dart';
 
-class CustomGoogleMap extends StatelessWidget {
+class CustomGoogleMap extends StatefulWidget {
   const CustomGoogleMap({super.key});
+
+  @override
+  State<CustomGoogleMap> createState() => _CustomGoogleMapState();
+}
+
+class _CustomGoogleMapState extends State<CustomGoogleMap> {
+  BitmapDescriptor? customIcon;
+  LatLng? tappedPosition;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCustomIcon();
+  }
+
+  Future<void> _loadCustomIcon() async {
+    customIcon = await BitmapDescriptor.fromAssetImage(
+      const ImageConfiguration(),
+      'assets/images/marker_icon.png',
+    );
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +50,6 @@ class CustomGoogleMap extends StatelessWidget {
             appBar: AppBar(
               title: const Text('Custom Google Map'),
               actions: [
-                // Button to toggle between map types (Normal/Satellite)
                 IconButton(
                   icon: const Icon(Icons.satellite),
                   onPressed: () {
@@ -39,7 +60,6 @@ class CustomGoogleMap extends StatelessWidget {
                     context.read<MapCubit>().setMapType(newMapType);
                   },
                 ),
-                // Button to switch to POI addition mode
                 IconButton(
                   icon: const Icon(Icons.add_location_alt),
                   onPressed: () => context.read<MapCubit>().toggleAddingPOI(),
@@ -56,10 +76,10 @@ class CustomGoogleMap extends StatelessWidget {
                     target: LatLng(31.040961, 31.378491),
                     zoom: 15,
                   ),
-                  // Capture the tap event and pass the tapped position to the dialog
                   onTap: (LatLng position) {
-                    // Show dialog to add POI at the tapped position
-                    _showAddPOIDialog(context, position);
+                    if (state.isAddingPOI) {
+                      _showAddPOIDialog(context, position);
+                    }
                   },
                 ),
                 if (state.isAddingPOI)
@@ -67,11 +87,7 @@ class CustomGoogleMap extends StatelessWidget {
                     bottom: 100,
                     right: 10,
                     child: FloatingActionButton(
-                      onPressed: () {
-                        // Show dialog to add POI
-                        _showAddPOIDialog(
-                            context, const LatLng(31.040961, 31.378491));
-                      },
+                      onPressed: () {},
                       child: const Icon(Icons.add_location),
                     ),
                   ),
@@ -90,6 +106,7 @@ class CustomGoogleMap extends StatelessWidget {
       return Marker(
         markerId: MarkerId(place.id.toString()),
         position: place.position,
+        icon: customIcon ?? BitmapDescriptor.defaultMarker,
         infoWindow: InfoWindow(title: place.name, snippet: place.description),
       );
     }).toSet();
@@ -121,16 +138,15 @@ class CustomGoogleMap extends StatelessWidget {
           actions: [
             TextButton(
               onPressed: () {
-                final name = nameController.text;
-                final description = descriptionController.text;
+                final name = nameController.text.trim();
+                final description = descriptionController.text.trim();
 
                 if (name.isNotEmpty && description.isNotEmpty) {
                   final newPOI = PlaceEntity(
-                    id: DateTime.now()
-                        .millisecondsSinceEpoch, // Unique ID using timestamp
+                    id: DateTime.now().millisecondsSinceEpoch,
                     name: name,
                     description: description,
-                    position: position, // Use the clicked position
+                    position: position,
                   );
                   context.read<MapCubit>().addPOI(newPOI);
                   Navigator.of(context).pop();
